@@ -1,16 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>CHI Green Pastures</title>
+    <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
+
     <style>
        /* Set the size of the div element that contains the map */
       #map {
         height: 700px;  /* The height is 400 pixels */
         width: 100%;  /* The width is the width of the web page */
        }
+
+     .header img {
+       float: left;
+       margin: 12px 15px 15px 0px;
+       height: 24px;
+       background: transparent;
+     }
+
+     .header h1 {
+        position: relative;
+        font-family: 'Abril Fatface', cursive;
+        font-size: 36px;
+      }
+
     </style>
   </head>
   <body>
-    <h3>Chicago's Green Pastures</h3>
+    <div class="header">
+      <img src="https://natashaw.github.io/gedanken/assets/chicagoflag.png" alt="chicago flag" />
+      <h1>Chicago's Green Pastures</h1>
+    </div>
     <!--The div element for the map -->
     <div id="map"></div>
     <script>
