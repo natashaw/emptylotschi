@@ -33,14 +33,56 @@
     </div>
     <!--The div element for the map -->
     <div id="map"></div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+  	console.log("Hello, World!");
+
+    function getMarkers()
+    {
+        console.log("In getMarkers");
+        axios.get('vacant-lots-englewood.json').then(function(response) {
+          console.log("got response from axious calling callback");
+          var mapData = axiosCallback(response);
+          initMap(mapData);
+        });
+    }
+
+    function axiosCallback(response)
+    {
+      console.log("in axiosCallback");
+
+      var lots = [];
+      for (var i = 0; i < response.data.length; i++) {
+          lots.push(response.data[i].lot);
+      }
+
+      var markers = []
+      var info = []
+      var retval = [markers, info]
+
+      for (var i = 0; i < lots.length; i++) {
+          var address = lots[i].Address;
+          var latitude = lots[i].Location.Latitude;
+          var longitude = lots[i].Location.Longitude;
+          var distance = lots[i].Metadata.DistanceToClosetGroceryStore;
+
+          markers.push([ address, latitude, longitude]);
+          info.push(['<div class="info_content">' +
+            '<h3>'+ address +'</h3>' +
+            '<p>Vacant Lot. Nearest Grocery Store: ' + distance+' miles</p></div>']);
+      }
+
+      return retval;
+    }
+
 
     // The location of Chicago
     //{lat: 41.776, lng: -87.639};
     // Initialize and add the map
-    function initMap() {
+    function initMap(mapData) {
+        console.log("in initMap");
         map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 15,
+          zoom: 14,
           center: new google.maps.LatLng(41.776,-87.639),
           mapTypeId: 'terrain'
         });
@@ -67,27 +109,16 @@
 
         bermudaTriangle.setMap(map);
 
-        // TODO: Read and parse JSON file
+        console.log("parse done");
 
-        // Multiple Markers
-        var markers = [
-            ['London Eye, London', 41.777, -87.650],
-            ['Palace of Westminster, London', 41.772, -87.645]
-        ];
+
 
         // Info Window Content
-        var infoWindowContent = [
-            ['<div class="info_content">' +
-            '<h3>London Eye</h3>' +
-            '<p>The London Eye is a giant Ferris wheel situated on the banks of the River Thames. The entire structure is 135 metres (443 ft) tall and the wheel has a diameter of 120 metres (394 ft).</p>' +        '</div>'],
-            ['<div class="info_content">' +
-            '<h3>Palace of Westminster</h3>' +
-            '<p>The Palace of Westminster is the meeting place of the House of Commons and the House of Lords, the two houses of the Parliament of the United Kingdom. Commonly known as the Houses of Parliament after its tenants.</p>' +
-            '</div>']
-        ];
+        var markers = mapData[0];
+        var infoWindowContent = mapData[1];
 
         // Display multiple markers on a map
-        var infoWindow = new google.maps.InfoWindow(), marker, i;
+        var infoWindow = new google.maps.InfoWindow(), markers, i;
 
         // Loop through our array of markers & place each one on the map
         for( i = 0; i < markers.length; i++ ) {
@@ -128,7 +159,7 @@
     * The callback parameter executes the initMap() function
     -->
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiUOdoSnnOSY3Ssl65Fkii1PkPKCLpyFo&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiUOdoSnnOSY3Ssl65Fkii1PkPKCLpyFo&callback=getMarkers">
     </script>
   </body>
 </html>
